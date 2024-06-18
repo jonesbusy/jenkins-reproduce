@@ -41,9 +41,9 @@ credentials:
 
 jobs:
   - script: >
-      pipelineJob('seed-job-test') {
-        displayName('seed-job-test')
-        description('seed-job-test')
+      pipelineJob('seed-job') {
+        displayName('seed-job')
+        description('seed-job')
         definition {
           cps {
             sandbox(true)
@@ -53,7 +53,7 @@ jobs:
                       label('built-in')
                   }
                   stages {
-                      stage('Seed job validation') {
+                      stage('Seed') {
                           steps {
                               jobDsl(failOnSeedCollision: true,
                                      lookupStrategy: 'SEED_JOB',
@@ -66,15 +66,18 @@ jobs:
                                             organizations {
                                               github {
                                                 apiUri('https://api.github.com')
-                                                repoOwner('jonesbusy')
+                                                repoOwner('jonesbusy-automation')
                                                 credentialsId('github')
                                                 enableAvatar(false)
                                                 traits {
                                                   gitHubExcludePrivateRepositories()
                                                   gitHubExcludeArchivedRepositories()
                                                   gitHubExcludeForkedRepositories()
+                                                  gitHubBranchDiscovery {
+                                                    strategyId(3)
+                                                  }
                                                   sourceRegexFilter {
-                                                    regex('xunitnet-plugin')
+                                                    regex('maven-project')
                                                   }
                                                   headRegexFilter {
                                                     regex('main')
