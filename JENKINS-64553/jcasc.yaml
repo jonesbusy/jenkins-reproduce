@@ -39,7 +39,49 @@ credentials:
               scope: GLOBAL
               password: "${GH_TOKEN}"
 
+
+
 jobs:
+  - script: >
+      pipelineJob('update-via-cli') {
+        displayName('update-via-cli')
+        description('update-via-cli')
+        definition {
+          cps {
+            sandbox(true)
+            script("""
+              pipeline {
+                agent {
+                    label('built-in')
+                }
+                stages {
+                  stage('Retrieve job config (filter script)') {
+                    steps {
+                      sh(script: 'curl localhost:8080/jnlpJars/jenkins-cli.jar --output jenkins-cli.jar')
+                      sh(script: 'java -jar jenkins-cli.jar -s http://localhost:8080  -webSocket get-job github-organisation | grep "script"')
+                      sh(script: 'java -jar jenkins-cli.jar -s http://localhost:8080  -webSocket get-job github-organisation/maven-project | grep "<script>"')
+                    }
+                  }
+                  stage('Update org folder via CLI') {
+                    steps {
+                      sh(script: 'java -jar jenkins-cli.jar -s http://localhost:8080  -webSocket get-job github-organisation > config.xml')
+                      sh(script: \"sed -i -e 's/echo/println/g' config.xml\")
+                      sh(script: 'java -jar jenkins-cli.jar -s http://localhost:8080  -webSocket update-job github-organisation < config.xml')
+                    }
+                  }
+                  stage('Check config again (filter script)') {
+                    steps {
+                      sh(script: 'java -jar jenkins-cli.jar -s http://localhost:8080  -webSocket get-job github-organisation | grep "script"')
+                      sh(script: 'java -jar jenkins-cli.jar -s http://localhost:8080  -webSocket get-job github-organisation/maven-project | grep "<script>"')
+                    }
+                  }
+                }
+              }
+            """)
+          }
+        }
+      }
+
   - script: >
       pipelineJob('seed-job') {
         displayName('seed-job')
