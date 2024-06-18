@@ -1,0 +1,111 @@
+jenkins:
+
+  numExecutors: 1
+
+  log:
+    recorders:
+      - name: "dev"
+        loggers:
+          - name: "hudson"
+            level: "INFO"
+          - name: "jenkins"
+            level: "INFO"
+
+  disabledAdministrativeMonitors:
+    - "GitHubHookRegisterProblemMonitor"
+    - "jenkins.diagnostics.SecurityIsOffMonitor"
+    - "jenkins.diagnostics.ControllerExecutorsAgents"
+    - "jenkins.diagnostics.ControllerExecutorsNoAgents"
+    - "jenkins.diagnostics.RootUrlNotSetMonitor"
+
+  authorizationStrategy: unsecured
+
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: false
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: false
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - usernamePassword:
+              username: "github"
+              description: "github-token-scan"
+              id: "github"
+              scope: GLOBAL
+              password: "${GH_TOKEN}"
+
+jobs:
+  - script: >
+      pipelineJob('seed-job-test') {
+        displayName('seed-job-test')
+        description('seed-job-test')
+        definition {
+          cps {
+            sandbox(true)
+            script("""
+              pipeline {
+                  agent {
+                      label('built-in')
+                  }
+                  stages {
+                      stage('Seed job validation') {
+                          steps {
+                              jobDsl(failOnSeedCollision: true,
+                                     lookupStrategy: 'SEED_JOB',
+                                     removedConfigFilesAction: 'DELETE',
+                                     removedJobAction: 'DELETE',
+                                     removedViewAction: 'DELETE',
+                                     scriptText: '''
+                                        organizationFolder('github-organisation') {
+                                            displayName('github-organisation')
+                                            organizations {
+                                              github {
+                                                apiUri('https://api.github.com')
+                                                repoOwner('jonesbusy')
+                                                credentialsId('github')
+                                                enableAvatar(false)
+                                                traits {
+                                                  gitHubExcludePrivateRepositories()
+                                                  gitHubExcludeArchivedRepositories()
+                                                  gitHubExcludeForkedRepositories()
+                                                  sourceRegexFilter {
+                                                    regex('xunitnet-plugin')
+                                                  }
+                                                  headRegexFilter {
+                                                    regex('main')
+                                                  }
+                                                }
+                                                properties {
+                                                    suppressFolderAutomaticTriggering {
+                                                        branches('^\$')
+                                                        strategy('NONE')
+                                                    }
+                                                }
+                                                projectFactories {
+                                                    inlineDefinitionMultiBranchProjectFactory {
+                                                        sandbox(true)
+                                                        markerFile('pom.xml')
+                                                        script('node { echo "1" }')
+                                                    }
+                                                }
+                                              }
+                                            }
+                                        }
+                                     '''
+                                   )
+                          }
+                      }
+                  }
+              }
+            """)
+          }
+        }
+        properties {
+          disableConcurrentBuilds()
+        }
+      }

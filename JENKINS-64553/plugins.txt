@@ -1,0 +1,5 @@
+inline-pipeline:1.0.3
+github-branch-source:1789.v5b_0c0cea_18c3
+configuration-as-code:1810.v9b_c30a_249a_4c
+job-dsl:1.87
+pipeline-model-definition:2.2198.v41dd8ef6dd56
