@@ -30,7 +30,7 @@ unclassified:
           modernSCM:
             scm:
               gitSource:
-                remote: git@github.com:jonesbusy/jenkins-reproduce.git
+                remote: https://github.com/jonesbusy/jenkins-reproduce.git
 
 security:
   apiToken:
