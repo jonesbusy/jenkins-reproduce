@@ -1,0 +1,57 @@
+jenkins:
+
+  numExecutors: 1
+
+  nodes:
+  - permanent:
+      labelString: "agent"
+      launcher: "inbound"
+      mode: EXCLUSIVE
+      name: "agent"
+      remoteFS: "/home/jenkins/agent"
+      retentionStrategy: "always"
+
+  log:
+    recorders:
+      - name: "dev"
+        loggers:
+          - name: "hudson"
+            level: "INFO"
+          - name: "jenkins"
+            level: "INFO"
+
+  disabledAdministrativeMonitors:
+    - "jenkins.diagnostics.SecurityIsOffMonitor"
+    - "jenkins.diagnostics.ControllerExecutorsAgents"
+    - "jenkins.diagnostics.ControllerExecutorsNoAgents"
+    - "jenkins.diagnostics.RootUrlNotSetMonitor"
+
+  authorizationStrategy: unsecured
+
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: false
+
+jobs:
+  - script: >
+      pipelineJob('http') {
+        displayName('http')
+        description('http')
+        definition {
+          cps {
+            sandbox(true)
+            script("""
+              stage('Controller') {
+                  httpRequest responseHandle: 'NONE', url: 'https://www.google.com', wrapAsMultipart: false
+              }
+              stage('Agent') {
+                  node('agent') {
+                      httpRequest responseHandle: 'NONE', url: 'https://www.google.com', wrapAsMultipart: false
+                  }
+              }
+            """)
+          }
+        }
+      }

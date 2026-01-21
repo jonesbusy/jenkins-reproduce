@@ -1,0 +1,8 @@
+configuration-as-code:2006.v001a_2ca_6b_574
+pipeline-model-definition:2.2277.v00573e73ddf1
+strict-crumb-issuer:2.1.1
+job-dsl:1.93
+pipeline-groovy-lib:787.ve2fef0efdca_6
+git:5.8.1
+http_request:1.24
+apache-httpcomponents-client-5-api:5.6-183.ve5a_8a_b_e71e59

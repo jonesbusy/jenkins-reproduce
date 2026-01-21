@@ -1,0 +1,19 @@
+services:
+
+  jenkins:
+    container_name: jenkins
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - home_jenkins:/home/jenkins
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    networks:
+      - jenkins
+
+networks:
+  jenkins:
+volumes:
+  home_jenkins:

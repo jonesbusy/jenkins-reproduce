@@ -1,0 +1,31 @@
+services:
+
+  jenkins:
+    container_name: jenkins
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - home_jenkins:/home/jenkins
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    networks:
+      - jenkins
+  agent:
+    container_name: agent
+    image: jenkins/inbound-agent:3355.v388858a_47b_33-5-jdk25
+    environment:
+      - JENKINS_URL=http://jenkins:8080
+      - JENKINS_AGENT_NAME=agent
+      - JENKINS_AGENT_WORKDIR=/home/jenkins/agent
+      - JENKINS_SECRET=e9974b206add084b2a0a304d2aeb162576cb924f5a3b4988e4ad495d04c30942 
+    volumes:
+      - home_jenkins:/home/jenkins
+    networks:
+      - jenkins
+
+networks:
+  jenkins:
+volumes:
+  home_jenkins:
