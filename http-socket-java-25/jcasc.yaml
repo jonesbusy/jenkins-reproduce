@@ -10,6 +10,13 @@ jenkins:
       name: "agent"
       remoteFS: "/home/jenkins/agent"
       retentionStrategy: "always"
+  - permanent:
+      labelString: "external"
+      launcher: "inbound"
+      mode: EXCLUSIVE
+      name: "external"
+      remoteFS: "/home/vald/jenkins/agent"
+      retentionStrategy: "always"
 
   log:
     recorders:
@@ -48,6 +55,26 @@ jobs:
               }
               stage('Agent') {
                   node('agent') {
+                      httpRequest responseHandle: 'NONE', url: 'https://www.google.com', wrapAsMultipart: false
+                  }
+              }
+            """)
+          }
+        }
+      }
+  - script: >
+      pipelineJob('external-http') {
+        displayName('external-http')
+        description('external-http')
+        definition {
+          cps {
+            sandbox(true)
+            script("""
+              stage('Controller') {
+                  httpRequest responseHandle: 'NONE', url: 'https://www.google.com', wrapAsMultipart: false
+              }
+              stage('Agent') {
+                  node('external') {
                       httpRequest responseHandle: 'NONE', url: 'https://www.google.com', wrapAsMultipart: false
                   }
               }
