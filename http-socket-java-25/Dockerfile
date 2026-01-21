@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:2.547-jdk25
+FROM jenkins/jenkins:2.541.1-jdk25
 
 ADD plugins.txt /var/jenkins_home/plugins.txt
 RUN jenkins-plugin-cli --plugin-file /var/jenkins_home/plugins.txt --verbose --latest true --view-security-warnings --output txt

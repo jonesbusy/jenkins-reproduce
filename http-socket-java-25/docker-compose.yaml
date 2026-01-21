@@ -14,12 +14,12 @@ services:
       - jenkins
   agent:
     container_name: agent
-    image: jenkins/inbound-agent:3355.v388858a_47b_33-5-jdk25
+    image: jenkins/inbound-agent:3355.v388858a_47b_33-6-jdk25
     environment:
       - JENKINS_URL=http://jenkins:8080
       - JENKINS_AGENT_NAME=agent
       - JENKINS_AGENT_WORKDIR=/home/jenkins/agent
-      - JENKINS_SECRET=e9974b206add084b2a0a304d2aeb162576cb924f5a3b4988e4ad495d04c30942 
+      - JENKINS_SECRET=7043af164ac3dee8fb35cf92f5a77c0be0c462b194576f1161522be0f8622a08 
     volumes:
       - home_jenkins:/home/jenkins
     networks:
