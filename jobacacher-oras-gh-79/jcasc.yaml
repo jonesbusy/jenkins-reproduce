@@ -47,7 +47,7 @@ jobs:
             script("""
               node("built-in") {
                 stage('Controller') {
-                  cache(caches: [arbitraryFileCache(path: 'cache')]) {
+                  cache(caches: [arbitraryFileCache(path: 'cache', compressionMethod: 'TARGZ')]) {
                     sh 'echo "Hello from Controller"'
                     sh 'mkdir -p cache'
                     sh 'echo "This is a cache file" > cache/cache.txt'
