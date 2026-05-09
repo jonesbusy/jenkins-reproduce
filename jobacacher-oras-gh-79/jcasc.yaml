@@ -1,0 +1,60 @@
+jenkins:
+
+  numExecutors: 1
+
+  disabledAdministrativeMonitors:
+    - "jenkins.diagnostics.SecurityIsOffMonitor"
+    - "jenkins.diagnostics.ControllerExecutorsAgents"
+    - "jenkins.diagnostics.ControllerExecutorsNoAgents"
+    - "jenkins.diagnostics.RootUrlNotSetMonitor"
+
+  authorizationStrategy: unsecured
+
+  log:
+    recorders:
+      - name: "dev"
+        loggers:
+          - name: "hudson"
+            level: "INFO"
+          - name: "jenkins"
+            level: "INFO"
+          - name: "land.oras"
+            level: "ALL"
+          - name: "io.jenkins.plugins.jobcacher.oras"
+            level: "ALL"
+
+unclassified:
+  globalItemStorage:
+    storage:
+      oras:
+        namespace: "library"
+        registryUrl: "zot:5000"
+
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: false
+
+jobs:
+  - script: >
+      pipelineJob('cache') {
+        displayName('cache')
+        description('cache')
+        definition {
+          cps {
+            sandbox(true)
+            script("""
+              node("built-in") {
+                stage('Controller') {
+                  cache(caches: [arbitraryFileCache(path: 'cache')]) {
+                    sh 'echo "Hello from Controller"'
+                    sh 'mkdir -p cache'
+                    sh 'echo "This is a cache file" > cache/cache.txt'
+                  }
+                }
+              }
+            """)
+          }
+        }
+      }

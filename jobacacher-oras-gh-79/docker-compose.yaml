@@ -1,0 +1,26 @@
+services:
+
+  jenkins:
+    container_name: jenkins
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - home_jenkins:/home/jenkins
+    ports:
+      - "8080:8080"
+    networks:
+      - jenkins
+  zot:
+    image: ghcr.io/project-zot/zot-linux-amd64:v2.1.16
+    container_name: zot
+    restart: always
+    ports:
+      - "5000:5000"
+    networks:
+      - jenkins
+
+networks:
+  jenkins:
+volumes:
+  home_jenkins:

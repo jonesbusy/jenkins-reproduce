@@ -1,0 +1,9 @@
+configuration-as-code:2077.v41f1011a_5110
+pipeline-model-definition:2.2277.v00573e73ddf1
+strict-crumb-issuer:2.1.1
+job-dsl:3654.vdf58f53e2d15
+pipeline-groovy-lib:797.v90ea_a_9b_e45a_0
+git:5.10.1
+versioncolumn:400.v3c5c3004f31d
+jobcacher:826.v5e8436d03083
+jobcacher-oras-storage:incrementals;io.jenkins.plugins;143.v5b_fd18f2f463
