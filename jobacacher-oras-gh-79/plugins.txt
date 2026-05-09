@@ -6,4 +6,4 @@ pipeline-groovy-lib:797.v90ea_a_9b_e45a_0
 git:5.10.1
 versioncolumn:400.v3c5c3004f31d
 jobcacher:826.v5e8436d03083
-jobcacher-oras-storage:incrementals;io.jenkins.plugins;143.vb_a_7826b_4e383
+jobcacher-oras-storage:incrementals;io.jenkins.plugins;143.v82f4a_a_6c0445
